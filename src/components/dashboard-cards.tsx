@@ -18,7 +18,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
       value: metrics.total,
       description: 'Ofertas cadastradas no total',
       icon: FolderKanban,
-      color: 'text-indigo-400 bg-indigo-950/20 border-indigo-900/40',
+      color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200/60 dark:border-indigo-900/40',
       isGradient: false,
     },
     {
@@ -26,7 +26,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
       value: metrics.watching,
       description: 'Ofertas sendo monitoradas',
       icon: Eye,
-      color: 'text-amber-400 bg-amber-950/20 border-amber-900/40',
+      color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-900/40',
       isGradient: false,
     },
     {
@@ -34,7 +34,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
       value: metrics.growing,
       description: 'Ofertas com tração inicial',
       icon: TrendingUp,
-      color: 'text-emerald-400 bg-emerald-950/20 border-emerald-900/40',
+      color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-900/40',
       isGradient: false,
     },
     {
@@ -42,7 +42,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
       value: metrics.scaling,
       description: 'Ofertas em escala agressiva',
       icon: Zap,
-      color: 'text-violet-400 bg-violet-950/20 border-violet-900/40',
+      color: 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/20 border-violet-200/60 dark:border-violet-900/40',
       isGradient: false,
     },
     {
@@ -50,7 +50,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
       value: metrics.noRecentUpdate,
       description: 'Sem alterações há + de 7 dias',
       icon: Clock,
-      color: 'text-rose-400 bg-rose-950/20 border-rose-900/40',
+      color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-900/40',
       isGradient: false,
     },
   ]
@@ -62,7 +62,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
         return (
           <Card
             key={index}
-            className="border-border bg-gradient-to-br from-zinc-900/90 via-[#0d0d14]/95 to-[#161225]/95 text-slate-100 shadow-lg rounded-2xl transition-all duration-300 hover:scale-[1.02] cursor-default"
+            className="border-border bg-card dark:bg-gradient-to-br dark:from-zinc-900/90 dark:via-[#0d0d14]/95 dark:to-[#161225]/95 text-foreground shadow-lg rounded-2xl transition-all duration-300 hover:scale-[1.02] cursor-default"
           >
             <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
               <CardTitle className="text-[10px] font-semibold text-slate-450 uppercase tracking-wider">
@@ -73,7 +73,7 @@ export function DashboardCards({ metrics }: DashboardCardsProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white tracking-tight">{card.value}</div>
+              <div className="text-3xl font-bold text-foreground tracking-tight">{card.value}</div>
               <p className="text-[10px] text-slate-400 mt-1">{card.description}</p>
             </CardContent>
           </Card>

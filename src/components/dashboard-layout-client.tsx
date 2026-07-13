@@ -1,8 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database, Settings, LifeBuoy } from 'lucide-react'
+import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Sun, Bell, ChevronDown, Database, Settings, Phone } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
 import {
   DropdownMenu,
@@ -25,6 +26,24 @@ export default function DashboardLayoutClient({
   children,
 }: DashboardLayoutClientProps) {
   const pathname = usePathname()
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark')
+    setTheme(isDark ? 'dark' : 'light')
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
+  }
 
   const renderBreadcrumbs = () => {
     const parts = pathname.split('/').filter(Boolean)
@@ -137,13 +156,6 @@ export default function DashboardLayoutClient({
             >
               <PlusCircle className="w-5 h-5" />
             </Link>
-            <button
-              type="button"
-              title="Suporte (Breve)"
-              className="p-3.5 rounded-2xl transition-all flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary border border-transparent focus:outline-none cursor-pointer"
-            >
-              <LifeBuoy className="w-5 h-5" />
-            </button>
           </nav>
         </div>
 
@@ -169,7 +181,7 @@ export default function DashboardLayoutClient({
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left opacity-70">
-                <LifeBuoy className="w-3.5 h-3.5 text-indigo-400" />
+                <Phone className="w-3.5 h-3.5 text-indigo-400" />
                 Suporte (Breve)
               </DropdownMenuItem>
               <div className="h-px bg-slate-850 my-1" />
@@ -206,10 +218,15 @@ export default function DashboardLayoutClient({
             <div className="flex items-center gap-3">
               {/* Theme Toggle Button */}
               <button 
-                title="Alternar Tema" 
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-900/60 rounded-xl transition-all cursor-pointer hidden sm:flex items-center justify-center"
+                onClick={toggleTheme}
+                title={theme === 'light' ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'}
+                className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900/60 rounded-xl transition-all cursor-pointer hidden sm:flex items-center justify-center"
               >
-                <Moon className="w-4.5 h-4.5" />
+                {theme === 'light' ? (
+                  <Moon className="w-4.5 h-4.5" />
+                ) : (
+                  <Sun className="w-4.5 h-4.5 text-amber-400" />
+                )}
               </button>
 
               {/* Notifications Button */}
@@ -251,7 +268,7 @@ export default function DashboardLayoutClient({
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left opacity-70">
-                    <LifeBuoy className="w-3.5 h-3.5 text-indigo-400" />
+                    <Phone className="w-3.5 h-3.5 text-indigo-400" />
                     Suporte (Breve)
                   </DropdownMenuItem>
                   <div className="h-px bg-slate-850 my-1" />

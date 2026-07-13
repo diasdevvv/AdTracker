@@ -1,25 +1,19 @@
-# Walkthrough: Aba de Configurações e Reset Seguro do Dashboard
+# Walkthrough: Reorganização das Configurações e Botão de Suporte
 
-Implementação da página `/settings` e integração no layout lateral de navegação com suporte a atualizações de perfil (nome, foto via URL, credenciais) e reset completo da conta com verificação segura de senha.
+Remoção do atalho de Configurações da barra lateral principal, integração do link ao menu de perfil (dropdown) e adição de botões estáticos de suporte na plataforma.
 
 ## Alterações Realizadas
 
-1. **Novas Server Actions (`actions.ts`)**:
-   - `updateUserProfile`: Atualiza o e-mail, senha de login e dados de metadados (`name` e `avatar_url`) do usuário diretamente no Supabase Auth.
-   - `resetDashboard`: Valida a senha inserida efetuando um login de verificação. Se correto, deleta todas as ofertas da tabela `offers` atreladas ao usuário ativo.
+1. **Reorganização de Rota das Configurações (`/settings`)**:
+   - Removido o link da engrenagem do menu principal de navegação da barra lateral esquerda.
+   - O link para `/settings` agora está inserido no menu suspenso (Dropdown) de Perfil em dois locais:
+     - No **cabeçalho superior** (ao clicar na foto/nome do usuário).
+     - No **rodapé da barra lateral** (ao clicar na foto do usuário).
 
-2. **Interface Visual (`/settings`)**:
-   - Desenvolvida a página com visualização em três blocos organizados em cards estilizados (vidro escuro):
-     - **Editar Perfil**: Atualização de Nome de Exibição e URL da Foto de Perfil.
-     - **Conta & Segurança**: Atualização de credenciais de e-mail e senha.
-     - **Zona de Perigo**: Card vermelho explicativo contendo o botão de reset do painel.
-   - O reset do dashboard abre um modal dialog (`Dialog`) que exige a confirmação da senha do usuário antes de realizar a exclusão.
-
-3. **Layout e Avatares Adaptativos**:
-   - Registrada a propriedade opcional `avatarUrl` no layout.
-   - Modificados o cabeçalho superior e o menu inferior do perfil na barra lateral para renderizar o elemento de imagem `<img>` quando preenchido, caindo de volta para o texto de iniciais caso não configurado.
-   - Adicionada a rota de Configurações no mapeamento de Breadcrumbs do cabeçalho.
-   - Adicionado o link de Configurações na barra lateral usando o ícone `Settings` (engrenagem).
+2. **Botão de Suporte**:
+   - Importado o ícone de boia salva-vidas (`LifeBuoy` do `lucide-react`) para representar as ações de ajuda.
+   - Adicionado um botão de suporte estático no menu de navegação da barra lateral.
+   - Adicionada a opção **"Suporte (Breve)"** em ambos os menus suspensos de Perfil, funcionando como placeholder interativo para implementação posterior.
 
 ---
 
