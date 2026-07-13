@@ -1,19 +1,18 @@
-# Walkthrough: Reorganização das Configurações e Botão de Suporte
+# Walkthrough: White Mode, Contraste de Cards e Suporte com Ícone de Telefone
 
-Remoção do atalho de Configurações da barra lateral principal, integração do link ao menu de perfil (dropdown) e adição de botões estáticos de suporte na plataforma.
+Reorganização completa do visual claro (white version), correção de contraste das caixas superiores de estatísticas (cards), suavização de linhas de grade do gráfico e atualização do ícone de suporte.
 
 ## Alterações Realizadas
 
-1. **Reorganização de Rota das Configurações (`/settings`)**:
-   - Removido o link da engrenagem do menu principal de navegação da barra lateral esquerda.
-   - O link para `/settings` agora está inserido no menu suspenso (Dropdown) de Perfil em dois locais:
-     - No **cabeçalho superior** (ao clicar na foto/nome do usuário).
-     - No **rodapé da barra lateral** (ao clicar na foto do usuário).
+1. **Correção de Contraste no Modo Claro**:
+   - Os 5 cards de estatísticas superiores em `src/components/dashboard-cards.tsx` agora utilizam a classe `bg-card` e o seletor `dark:` para gradientes escuros, fazendo com que fiquem completamente brancos/claros no modo light.
+   - Os números das estatísticas agora usam `text-foreground` em vez de `text-white`, garantindo que fiquem pretos em modo claro e brancos em modo escuro.
+   - Ajustadas as cores das badges indicativas de status em cada card para variações de cinza, verde, violeta e vermelho de alta visibilidade e suavidade em ambos os modos.
+   - Adicionadas regras globais em `globals.css` para suavizar e converter a cor das linhas de grade (`<line>` do SVG) para a cor da borda clara (`var(--border)`) quando em modo light.
 
-2. **Botão de Suporte**:
-   - Importado o ícone de boia salva-vidas (`LifeBuoy` do `lucide-react`) para representar as ações de ajuda.
-   - Adicionado um botão de suporte estático no menu de navegação da barra lateral.
-   - Adicionada a opção **"Suporte (Breve)"** em ambos os menus suspensos de Perfil, funcionando como placeholder interativo para implementação posterior.
+2. **Suporte com Ícone de Telefone**:
+   - O ícone de Suporte foi alterado para `Phone` (telefone) em ambos os menus suspensos de perfil (cabeçalho e rodapé).
+   - O botão de suporte foi completamente removido da barra lateral de navegação (sidenar).
 
 ---
 

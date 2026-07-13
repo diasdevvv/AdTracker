@@ -62,9 +62,9 @@ export function OfferFilters() {
   }
 
   return (
-    <div className="border border-border bg-gradient-to-br from-zinc-900/90 via-[#0d0d14]/95 to-[#161225]/95 rounded-2xl p-5 space-y-4 shadow-lg">
+    <div className="border border-border bg-card dark:bg-gradient-to-br dark:from-zinc-900/90 dark:via-[#0d0d14]/95 dark:to-[#161225]/95 rounded-2xl p-5 space-y-4 shadow-lg">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-slate-250 font-semibold text-sm">
+        <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
           <SlidersHorizontal className="w-4 h-4 text-primary" />
           Filtros e Pesquisa
         </div>
@@ -74,29 +74,29 @@ export function OfferFilters() {
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {/* Search */}
         <div className="space-y-1.5 col-span-1 sm:col-span-2">
-          <label className="text-xs text-slate-400 font-medium">Pesquisar</label>
+          <label className="text-xs text-slate-400 dark:text-slate-500 font-medium">Pesquisar</label>
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
             <Input
               placeholder="Título ou anunciante..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-background border-border text-white placeholder-slate-500 text-xs focus-visible:ring-primary h-9 rounded-xl"
+              className="pl-9 bg-background border-border text-foreground placeholder-slate-550 text-xs focus-visible:ring-primary h-9 rounded-xl"
             />
           </div>
         </div>
 
         {/* Status */}
         <div className="space-y-1.5">
-          <label className="text-xs text-slate-400 font-medium">Status</label>
+          <label className="text-xs text-slate-400 dark:text-slate-500 font-medium">Status</label>
           <Select value={status} onValueChange={(val) => setStatus(val || 'all')}>
-            <SelectTrigger className="bg-background border-border text-white text-xs h-9 rounded-xl w-full">
+            <SelectTrigger className="bg-background border-border text-foreground text-xs h-9 rounded-xl w-full">
               <span className="flex flex-1 text-left">{getStatusLabel(status)}</span>
             </SelectTrigger>
-            <SelectContent className="bg-card border-border text-white rounded-xl">
-              <SelectItem value="all" className="focus:bg-secondary focus:text-white text-xs">Todos os Status</SelectItem>
+            <SelectContent className="bg-card border-border text-foreground rounded-xl">
+              <SelectItem value="all" className="focus:bg-secondary focus:text-foreground text-xs">Todos os Status</SelectItem>
               {Object.entries(statusMap).map(([key, val]) => (
-                <SelectItem key={key} value={key} className="focus:bg-secondary focus:text-white text-xs">
+                <SelectItem key={key} value={key} className="focus:bg-secondary focus:text-foreground text-xs">
                   {val.label}
                 </SelectItem>
               ))}
@@ -106,37 +106,37 @@ export function OfferFilters() {
 
         {/* Nicho */}
         <div className="space-y-1.5">
-          <label className="text-xs text-slate-400 font-medium">Nicho</label>
+          <label className="text-xs text-slate-400 dark:text-slate-500 font-medium">Nicho</label>
           <Input
             placeholder="Ex: Saúde"
             value={niche}
             onChange={(e) => setNiche(e.target.value)}
-            className="bg-background border-border text-white placeholder-slate-500 text-xs focus-visible:ring-primary h-9 rounded-xl"
+            className="bg-background border-border text-foreground placeholder-slate-550 text-xs focus-visible:ring-primary h-9 rounded-xl"
           />
         </div>
 
         {/* País */}
         <div className="space-y-1.5">
-          <label className="text-xs text-slate-400 font-medium">País</label>
+          <label className="text-xs text-slate-400 dark:text-slate-500 font-medium">País</label>
           <Input
             placeholder="Ex: Brasil"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className="bg-background border-border text-white placeholder-slate-500 text-xs focus-visible:ring-primary h-9 rounded-xl"
+            className="bg-background border-border text-foreground placeholder-slate-550 text-xs focus-visible:ring-primary h-9 rounded-xl"
           />
         </div>
 
         {/* Ordenar Por */}
         <div className="space-y-1.5">
-          <label className="text-xs text-slate-400 font-medium">Ordenar por</label>
+          <label className="text-xs text-slate-400 dark:text-slate-500 font-medium">Ordenar por</label>
           <Select value={sortBy} onValueChange={(val) => setSortBy(val || 'created_at')}>
-            <SelectTrigger className="bg-background border-border text-white text-xs h-9 rounded-xl w-full">
+            <SelectTrigger className="bg-background border-border text-foreground text-xs h-9 rounded-xl w-full">
               <span className="flex flex-1 text-left">{getSortByLabel(sortBy)}</span>
             </SelectTrigger>
-            <SelectContent className="bg-card border-border text-white rounded-xl">
-              <SelectItem value="created_at" className="focus:bg-secondary focus:text-white text-xs">Data de Criação</SelectItem>
-              <SelectItem value="updated_at" className="focus:bg-secondary focus:text-white text-xs">Última Atualização</SelectItem>
-              <SelectItem value="current_ads_count" className="focus:bg-secondary focus:text-white text-xs">Nº de Anúncios</SelectItem>
+            <SelectContent className="bg-card border-border text-foreground rounded-xl">
+              <SelectItem value="created_at" className="focus:bg-secondary focus:text-foreground text-xs">Data de Criação</SelectItem>
+              <SelectItem value="updated_at" className="focus:bg-secondary focus:text-foreground text-xs">Última Atualização</SelectItem>
+              <SelectItem value="current_ads_count" className="focus:bg-secondary focus:text-foreground text-xs">Nº de Anúncios</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -148,7 +148,7 @@ export function OfferFilters() {
             size="sm"
             variant="outline"
             onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-            className="text-[11px] h-8 border-border bg-background text-slate-350 hover:text-white hover:bg-secondary px-3 rounded-xl"
+            className="text-[11px] h-8 border-border bg-background text-foreground hover:bg-secondary px-3 rounded-xl"
           >
             Ordem: {sortOrder === 'desc' ? 'Decrescente' : 'Crescente'}
           </Button>
@@ -159,11 +159,11 @@ export function OfferFilters() {
             onClick={() => setOnlyFavorites(!onlyFavorites)}
             className={`text-[11px] h-8 border px-3 rounded-xl transition-all gap-1.5 flex items-center cursor-pointer ${
               onlyFavorites 
-                ? 'bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30' 
-                : 'border-border bg-background text-slate-350 hover:text-white hover:bg-secondary'
+                ? 'bg-amber-500/20 border-amber-550/40 text-amber-600 dark:text-amber-300 hover:bg-amber-500/30' 
+                : 'border-border bg-background text-foreground hover:bg-secondary'
             }`}
           >
-            <Star className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-yellow-400 text-yellow-400' : 'text-slate-500'}`} />
+            <Star className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-yellow-500 text-yellow-500' : 'text-slate-500'}`} />
             Apenas Favoritas
           </Button>
         </div>
@@ -173,7 +173,7 @@ export function OfferFilters() {
             size="sm"
             variant="ghost"
             onClick={clearFilters}
-            className="text-xs text-slate-400 hover:text-white hover:bg-secondary/50 h-8 px-3 rounded-xl"
+            className="text-xs text-slate-400 dark:text-slate-500 hover:bg-secondary h-8 px-3 rounded-xl"
           >
             <X className="w-3.5 h-3.5 mr-1" />
             Limpar

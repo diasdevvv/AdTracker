@@ -118,7 +118,7 @@ export function OfferTable({ offers }: OfferTableProps) {
       {/* Table Toolbar */}
       <div className="flex justify-end gap-2.5">
         <Link href="/offers/new">
-          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs gap-1.5 h-8 rounded-xl font-semibold cursor-pointer">
+          <Button className="bg-indigo-650 hover:bg-indigo-550 text-white text-xs gap-1.5 h-8 rounded-xl font-semibold cursor-pointer">
             <PlusCircle className="w-3.5 h-3.5" />
             Adicionar Oferta
           </Button>
@@ -128,7 +128,7 @@ export function OfferTable({ offers }: OfferTableProps) {
           variant="outline"
           size="sm"
           onClick={toggleHideSensitive}
-          className="border-border bg-card text-slate-350 hover:text-white hover:bg-secondary/60 text-xs gap-1.5 h-8 rounded-xl cursor-pointer"
+          className="border-border bg-card text-foreground hover:bg-secondary/60 text-xs gap-1.5 h-8 rounded-xl cursor-pointer"
         >
           {hideSensitive ? (
             <>
@@ -144,43 +144,43 @@ export function OfferTable({ offers }: OfferTableProps) {
         </Button>
       </div>
 
-      <div className="border border-border bg-gradient-to-br from-zinc-900/90 via-[#0d0d14]/95 to-[#161225]/95 rounded-2xl overflow-hidden shadow-lg">
+      <div className="border border-border bg-card dark:bg-gradient-to-br dark:from-zinc-900/90 dark:via-[#0d0d14]/95 dark:to-[#161225]/95 rounded-2xl overflow-hidden shadow-lg">
         <Table>
           <TableHeader className="bg-background/40 border-b border-border">
             <TableRow className="border-b border-border hover:bg-background/40">
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Título da Oferta</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Anunciante</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5 text-center">Nº Anúncios</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Observações</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Status</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Última Atualização</TableHead>
-              <TableHead className="text-slate-400 font-semibold text-xs py-3.5 text-right">Ações</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5">Título da Oferta</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5">Anunciante</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5 text-center">Nº Anúncios</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5">Observações</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5">Status</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5">Última Atualização</TableHead>
+              <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-3.5 text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {offers.map((offer) => (
               <TableRow key={offer.id} className="border-b border-border hover:bg-secondary/20 transition-colors">
-                <TableCell className="font-semibold text-slate-100 text-sm max-w-[280px] truncate">
+                <TableCell className="font-semibold text-foreground text-sm max-w-[280px] truncate">
                   <div className={hideSensitive ? 'blur-sm select-none pointer-events-none' : 'flex items-center gap-2 flex-wrap'}>
                     <button
                       onClick={() => handleToggleFavorite(offer.id)}
                       disabled={favUpdatingId === offer.id}
-                      className="p-1 -ml-1 rounded text-slate-450 hover:text-amber-400 disabled:opacity-50 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+                      className="p-1 -ml-1 rounded text-slate-450 hover:text-amber-500 disabled:opacity-50 transition-colors cursor-pointer flex items-center justify-center shrink-0"
                       title={offer.is_favorite ? 'Remover dos favoritos' : 'Favoritar oferta'}
                     >
-                      <Star className={`w-3.5 h-3.5 ${offer.is_favorite ? 'fill-yellow-400 text-yellow-400' : 'text-slate-500 hover:text-slate-350'}`} />
+                      <Star className={`w-3.5 h-3.5 ${offer.is_favorite ? 'fill-yellow-500 text-yellow-500' : 'text-slate-500 hover:text-slate-350'}`} />
                     </button>
                     <Link href={`/offers/${offer.id}`} className="hover:text-primary transition-colors">
                       {offer.title}
                     </Link>
                     {offer.product_name && (
-                      <span className="text-[11px] font-normal text-slate-400 bg-secondary/80 border border-border px-1.5 py-0.5 rounded-md">
+                      <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400 bg-secondary/85 border border-border px-1.5 py-0.5 rounded-md">
                         {offer.product_name}
                       </span>
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-slate-350 text-sm max-w-[120px] truncate">
+                <TableCell className="text-foreground/80 dark:text-slate-350 text-sm max-w-[120px] truncate">
                   <span className={hideSensitive ? 'blur-sm select-none' : ''}>
                     {offer.advertiser_name || '-'}
                   </span>
@@ -199,11 +199,11 @@ export function OfferTable({ offers }: OfferTableProps) {
                         }
                       }}
                       disabled={updatingId === offer.id}
-                      className="w-16 bg-background border border-border text-white text-center rounded px-1.5 py-0.5 focus:border-primary focus:outline-none text-xs disabled:opacity-50 font-bold"
+                      className="w-16 bg-background border border-border text-foreground text-center rounded px-1.5 py-0.5 focus:border-primary focus:outline-none text-xs disabled:opacity-50 font-bold"
                     />
                   </div>
                 </TableCell>
-                <TableCell className="text-slate-400 text-xs max-w-[180px] truncate">
+                <TableCell className="text-slate-500 dark:text-slate-400 text-xs max-w-[180px] truncate">
                   <span className={hideSensitive ? 'blur-sm select-none' : ''}>
                     {offer.notes || '-'}
                   </span>
@@ -211,48 +211,48 @@ export function OfferTable({ offers }: OfferTableProps) {
                 <TableCell className="py-2.5">
                   <StatusBadge status={offer.status} />
                 </TableCell>
-                <TableCell className="text-slate-400 text-sm">{formatDate(offer.updated_at)}</TableCell>
+                <TableCell className="text-slate-550 dark:text-slate-400 text-sm">{formatDate(offer.updated_at)}</TableCell>
                 <TableCell className="text-right py-2">
                   <div className="flex items-center justify-end gap-1">
                     <Link href={`/offers/${offer.id}`} title="Visualizar Oferta">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-secondary/40">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-450 hover:text-foreground hover:bg-secondary/40">
                         <Eye className="w-3.5 h-3.5" />
                       </Button>
                     </Link>
 
                     <Link href={`/offers/${offer.id}/edit`} title="Editar Oferta">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-secondary/40">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-455 hover:text-foreground hover:bg-secondary/40">
                         <Edit className="w-3.5 h-3.5" />
                       </Button>
                     </Link>
 
                     <a href={offer.ad_library_url} target="_blank" rel="noopener noreferrer" title="Abrir Ad Library">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-secondary/40">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-455 hover:text-foreground hover:bg-secondary/40">
                         <ExternalLink className="w-3.5 h-3.5" />
                       </Button>
                     </a>
 
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="h-8 w-8 text-slate-400 hover:text-white hover:bg-secondary/40 flex items-center justify-center rounded-md cursor-pointer outline-none">
+                      <DropdownMenuTrigger className="h-8 w-8 text-slate-455 hover:text-foreground hover:bg-secondary/40 flex items-center justify-center rounded-md cursor-pointer outline-none">
                         <MoreHorizontal className="w-4 h-4" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-card border border-border text-white min-w-[160px] rounded-xl">
+                      <DropdownMenuContent align="end" className="bg-card border border-border text-foreground min-w-[160px] rounded-xl">
                         <DropdownMenuGroup>
-                          <DropdownMenuLabel className="text-xs text-slate-400">Opções</DropdownMenuLabel>
+                          <DropdownMenuLabel className="text-xs text-slate-450">Opções</DropdownMenuLabel>
                           <DropdownMenuSeparator className="bg-border" />
 
                           {/* Submenu for changing status */}
                           <DropdownMenuSub>
-                            <DropdownMenuSubTrigger className="focus:bg-secondary focus:text-white text-xs gap-2">
+                            <DropdownMenuSubTrigger className="focus:bg-secondary focus:text-foreground text-xs gap-2">
                               <ShieldAlert className="w-3.5 h-3.5" />
                               Alterar Status
                             </DropdownMenuSubTrigger>
-                            <DropdownMenuSubContent className="bg-card border border-border text-white rounded-xl">
+                            <DropdownMenuSubContent className="bg-card border border-border text-foreground rounded-xl">
                               {Object.entries(statusMap).map(([key, val]) => (
                                 <DropdownMenuItem
                                   key={key}
                                   onClick={() => handleStatusChange(offer.id, key)}
-                                  className="focus:bg-secondary focus:text-white text-xs"
+                                  className="focus:bg-secondary focus:text-foreground text-xs"
                                 >
                                   {val.label}
                                 </DropdownMenuItem>
@@ -266,7 +266,7 @@ export function OfferTable({ offers }: OfferTableProps) {
                               setSelectedOffer(offer)
                               setIsDeleteOpen(true)
                             }}
-                            className="focus:bg-red-950/40 text-red-400 focus:text-red-300 text-xs gap-2 cursor-pointer"
+                            className="focus:bg-red-950/40 text-red-500 focus:text-red-400 text-xs gap-2 cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             Excluir
