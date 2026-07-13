@@ -7,15 +7,34 @@ import { PlusCircle, BarChart2, TrendingUp, Award, Calendar } from 'lucide-react
 
 export const dynamic = 'force-dynamic'
 
-const getEvolutionData = (offers: any[]) => {
+interface PageProps {
+  searchParams: Promise<{
+    days?: string
+  }>
+}
+
+const getEvolutionData = (offers: any[], daysCount: number) => {
   const data: { date: string; formattedDate: string; count: number }[] = []
   const today = new Date()
   
-  for (let i = 6; i >= 0; i--) {
+  for (let i = daysCount - 1; i >= 0; i--) {
     const d = new Date()
     d.setDate(today.getDate() - i)
     const dateKey = d.toLocaleDateString('en-CA')
-    const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+    
+    // Formatar rótulos espaçados para evitar sobreposição no eixo X
+    let label = ''
+    if (daysCount === 7) {
+      label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+    } else if (daysCount === 30) {
+      if (i % 5 === 0 || i === daysCount - 1 || i === 0) {
+        label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+      }
+    } else { // 60
+      if (i % 10 === 0 || i === daysCount - 1 || i === 0) {
+        label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+      }
+    }
     
     let sum = 0
     offers.forEach(offer => {
@@ -41,13 +60,17 @@ const getEvolutionData = (offers: any[]) => {
   return data
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: PageProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     redirect('/login')
   }
+
+  // Resolver searchParams de forma assíncrona
+  const query = await searchParams
+  const daysParam = query.days === '30' ? 30 : query.days === '60' ? 60 : 7
 
   // Obter todas as ofertas do usuário
   const { data: offers } = await supabase
@@ -70,7 +93,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link href="/offers/new">
-          <Button className="bg-indigo-650 hover:bg-indigo-550 text-white font-medium">
+          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium">
             <PlusCircle className="w-4 h-4 mr-2" />
             Cadastrar Primeira Oferta
           </Button>
@@ -149,8 +172,8 @@ export default async function DashboardPage() {
     .sort((a, b) => (b.current_ads_count || 0) - (a.current_ads_count || 0))
     .slice(0, 3)
 
-  // 4. Evolução de anúncios de 7 dias (Gráfico de área corrigido)
-  const evolutionData = getEvolutionData(offersList)
+  // 4. Evolução de anúncios de período dinâmico
+  const evolutionData = getEvolutionData(offersList, daysParam)
   const maxAds = Math.max(...evolutionData.map(d => d.count), 10)
   
   // Widescreen proportions to prevent stretching
@@ -295,16 +318,46 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap justify-between items-center gap-4 pb-4 border-b border-slate-900/50">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Award className="w-4 h-4 text-indigo-400" />
+              <TrendingUp className="w-4 h-4 text-indigo-400" />
               Evolução de Anúncios Ativos
             </h3>
             <p className="text-xs text-slate-450">
-              Total de anúncios ativos monitorados nos últimos 7 dias.
+              Total de anúncios ativos monitorados no período selecionado.
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium bg-slate-900/30 border border-slate-900 px-3 py-1.5 rounded-lg">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Últimos 7 dias</span>
+          
+          {/* Period selector tab links */}
+          <div className="flex items-center gap-1 bg-slate-900/40 border border-slate-900 p-1 rounded-xl">
+            <Link 
+              href="/?days=7"
+              className={`text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-lg transition-all ${
+                daysParam === 7 
+                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-650/30' 
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              7 dias
+            </Link>
+            <Link 
+              href="/?days=30"
+              className={`text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-lg transition-all ${
+                daysParam === 30 
+                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-650/30' 
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              30 dias
+            </Link>
+            <Link 
+              href="/?days=60"
+              className={`text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-lg transition-all ${
+                daysParam === 60 
+                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-650/30' 
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              60 dias
+            </Link>
           </div>
         </div>
 
@@ -367,60 +420,68 @@ export default async function DashboardPage() {
             />
 
             {/* Points & Labels */}
-            {points.map((p, idx) => (
-              <g key={idx} className="group/node">
-                {/* Glowing Outer Dot */}
-                <circle 
-                  cx={p.x} 
-                  cy={p.y} 
-                  r="6" 
-                  className="fill-indigo-500/30 stroke-none scale-0 group-hover/node:scale-100 transition-transform duration-200 origin-center"
-                />
-                {/* Inner Dot */}
-                <circle 
-                  cx={p.x} 
-                  cy={p.y} 
-                  r="3.5" 
-                  className="fill-indigo-950 stroke-indigo-400 stroke-[2] cursor-pointer"
-                />
-                
-                {/* Date labels at baseline */}
-                <text 
-                  x={p.x} 
-                  y={chartHeight - 6} 
-                  fill="#64748b" 
-                  fontSize="8" 
-                  fontWeight="600"
-                  textAnchor="middle"
-                >
-                  {p.label}
-                </text>
+            {points.map((p, idx) => {
+              // Reduzir tamanho dos pontos para não poluir visualmente quando forem muitos dias
+              const dotRadius = daysParam === 7 ? 3.5 : 1.5
+              const glowRadius = daysParam === 7 ? 6 : 3
 
-                {/* Hover Value Tooltip inside SVG */}
-                <g className="opacity-0 group-hover/node:opacity-100 transition-opacity duration-200 pointer-events-none">
-                  <rect 
-                    x={p.x - 22} 
-                    y={p.y - 24} 
-                    width="44" 
-                    height="16" 
-                    rx="4" 
-                    fill="#0f172a" 
-                    stroke="#334155" 
-                    strokeWidth="1"
+              return (
+                <g key={idx} className="group/node">
+                  {/* Glowing Outer Dot */}
+                  <circle 
+                    cx={p.x} 
+                    cy={p.y} 
+                    r={glowRadius} 
+                    className="fill-indigo-500/30 stroke-none scale-0 group-hover/node:scale-100 transition-transform duration-200 origin-center"
                   />
-                  <text 
-                    x={p.x} 
-                    y={p.y - 13} 
-                    fill="#f8fafc" 
-                    fontSize="9" 
-                    fontWeight="bold"
-                    textAnchor="middle"
-                  >
-                    {p.count} ads
-                  </text>
+                  {/* Inner Dot */}
+                  <circle 
+                    cx={p.x} 
+                    cy={p.y} 
+                    r={dotRadius} 
+                    className="fill-indigo-950 stroke-indigo-400 stroke-[2] cursor-pointer"
+                  />
+                  
+                  {/* Date labels at baseline (render conditional labels to prevent overcrowding) */}
+                  {p.label && (
+                    <text 
+                      x={p.x} 
+                      y={chartHeight - 6} 
+                      fill="#64748b" 
+                      fontSize="8" 
+                      fontWeight="600"
+                      textAnchor="middle"
+                    >
+                      {p.label}
+                    </text>
+                  )}
+
+                  {/* Hover Value Tooltip inside SVG */}
+                  <g className="opacity-0 group-hover/node:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <rect 
+                      x={p.x - 22} 
+                      y={p.y - 24} 
+                      width="44" 
+                      height="16" 
+                      rx="4" 
+                      fill="#0f172a" 
+                      stroke="#334155" 
+                      strokeWidth="1"
+                    />
+                    <text 
+                      x={p.x} 
+                      y={p.y - 13} 
+                      fill="#f8fafc" 
+                      fontSize="9" 
+                      fontWeight="bold"
+                      textAnchor="middle"
+                    >
+                      {p.count} ads
+                    </text>
+                  </g>
                 </g>
-              </g>
-            ))}
+              )
+            })}
           </svg>
         </div>
       </div>

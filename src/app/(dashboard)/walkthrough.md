@@ -1,23 +1,21 @@
-# Walkthrough: Dashboard Analítico e Aba de Ofertas Separados
+# Walkthrough: Gráfico Pizza, Top Ofertas e Proporção do Gráfico
 
-Dashboard e gerenciamento de ofertas separados em duas abas/páginas distintas, integrando novos indicadores, estatísticas agregadas e gráficos de evolução.
+Refinamento visual do Dashboard principal (`/`) com a inclusão de gráfico circular de rosca, listagem de ofertas de alta relevância e correção de escala dos gráficos de linha.
 
 ## Alterações Realizadas
 
-1. **Dashboard Principal (`/`)**:
-   - Focado 100% em inteligência analítica de anúncios e campanhas.
-   - **Cartões de Métricas**: Painel consolidado do status de monitoramento das ofertas.
-   - **Distribuição de Anúncios por Nicho**: Barras de progresso horizontais customizadas indicando a concentração de anúncios por nicho de mercado.
-   - **Médias e Estatísticas**: Destaque rápido de médias (anúncios por oferta, taxa de favoritos e taxa de escala).
-   - **Evolução em Gráfico SVG**: Um gráfico de área SVG customizado com grid de linhas pontilhadas, gradiente suave e marcadores circulares interativos que exibem o número acumulado de anúncios ativos dos últimos 7 dias.
+1. **Gráfico de Pizza/Rosca para Nichos**:
+   - Desenvolvido um Donut/Pie Chart em SVG nativo em `src/app/(dashboard)/page.tsx`.
+   - Calcula frações de circunferência dinamicamente (`2 * PI * r`) usando as propriedades `strokeDasharray` e `strokeDashoffset` com rotação de -90 graus para alinhar as fatias ao topo.
+   - Legenda lateral direita exibindo as cores dos nichos e respectivas porcentagens.
 
-2. **Lista Dedicada de Ofertas (`/offers`)**:
-   - Nova rota criada na estrutura Next.js em `src/app/(dashboard)/offers/page.tsx`.
-   - Incorpora os filtros de busca textuais e filtros avançados (nicho, status, país, favoritos) junto com a tabela interativa de dados do Supabase.
+2. **Top 3 Ofertas Ativas**:
+   - Criado um widget de ranking para destacar as 3 ofertas com maior quantidade de anúncios ativos.
+   - Exibe a classificação estilizada (ouro, prata e bronze), anunciante, nicho correspondente e badges informando a contagem de anúncios.
 
-3. **Menu Lateral Atualizado**:
-   - Adicionado novo link na barra lateral esquerda (`Database`) para levar à nova página `/offers` de forma destacada, mantendo o controle ativo.
-   - Breadcrumbs do topo atualizados para refletir a nova estrutura da rota de ofertas `/offers` de forma precisa.
+3. **Correção do Gráfico de Área Esticado**:
+   - Ajustada a proporção do SVG em `page.tsx` para `800x180` (widescreen nativo).
+   - Removida a propriedade `preserveAspectRatio="none"` permitindo que o SVG seja renderizado proporcionalmente, eliminando a distorção oval nos círculos e esticamento nos textos e fontes.
 
 ---
 
