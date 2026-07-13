@@ -9,11 +9,13 @@ export default async function DashboardLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const userName = user?.email ? user.email.split('@')[0] : 'Visitante'
+  const metadata = user?.user_metadata || {}
+  const userName = metadata.name || (user?.email ? user.email.split('@')[0] : 'Visitante')
   const userEmail = user?.email || 'visitante@adtracker.com'
+  const avatarUrl = metadata.avatarUrl || metadata.avatar_url || ''
 
   return (
-    <DashboardLayoutClient userName={userName} userEmail={userEmail}>
+    <DashboardLayoutClient userName={userName} userEmail={userEmail} avatarUrl={avatarUrl}>
       {children}
     </DashboardLayoutClient>
   )

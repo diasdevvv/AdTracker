@@ -385,3 +385,77 @@ export async function generateTestOffers() {
   revalidatePath('/')
   revalidatePath('/offers')
 }
+
+export async function updateUserProfile(values: {
+  name?: string
+  avatarUrl?: string
+  email?: string
+  password?: string
+}) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Usuário não autenticado.' }
+  }
+
+  const updateData: any = {}
+  
+  if (values.name !== undefined || values.avatarUrl !== undefined) {
+    const metadata = user.user_metadata || {}
+    if (values.name !== undefined) metadata.name = values.name
+    if (values.avatarUrl !== undefined) {
+      metadata.avatarUrl = values.avatarUrl
+      metadata.avatar_url = values.avatarUrl
+    }
+    updateData.data = metadata
+  }
+
+  if (values.email && values.email !== user.email) {
+    updateData.email = values.email
+  }
+
+  if (values.password) {
+    updateData.password = values.password
+  }
+
+  if (Object.keys(updateData).length > 0) {
+    const { error } = await supabase.auth.updateUser(updateData)
+    if (error) {
+      return { error: `Erro ao atualizar dados: ${error.message}` }
+    }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/offers')
+  return { success: true }
+}
+
+export async function resetDashboard(password: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user || !user.email) {
+    return { error: 'Usuário não autenticado.' }
+  }
+
+  const { error: authErr } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password
+  })
+
+  if (authErr) {
+    return { error: 'Senha incorreta. Não foi possível redefinir o dashboard.' }
+  }
+
+  const { error: deleteErr } = await supabase
+    .from('offers')
+    .delete()
+    .eq('user_id', user.id)
+
+  if (deleteErr) {
+    return { error: `Erro ao excluir ofertas: ${deleteErr.message}` }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/offers')
+  return { success: true }
+}

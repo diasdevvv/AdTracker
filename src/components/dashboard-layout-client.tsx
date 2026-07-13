@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database } from 'lucide-react'
+import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database, Settings } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
 import {
   DropdownMenu,
@@ -14,12 +14,14 @@ import {
 interface DashboardLayoutClientProps {
   userName: string
   userEmail: string
+  avatarUrl?: string
   children: React.ReactNode
 }
 
 export default function DashboardLayoutClient({
   userName,
   userEmail,
+  avatarUrl,
   children,
 }: DashboardLayoutClientProps) {
   const pathname = usePathname()
@@ -65,6 +67,14 @@ export default function DashboardLayoutClient({
               <span key={idx} className="flex items-center gap-1.5">
                 <span className="text-slate-600">/</span>
                 <span className="text-slate-200 font-semibold">Editar Oferta</span>
+              </span>
+            )
+          }
+          if (part === 'settings') {
+            return (
+              <span key={idx} className="flex items-center gap-1.5">
+                <span className="text-slate-600">/</span>
+                <span className="text-slate-200 font-semibold">Configurações</span>
               </span>
             )
           }
@@ -127,14 +137,29 @@ export default function DashboardLayoutClient({
             >
               <PlusCircle className="w-5 h-5" />
             </Link>
+            <Link
+              href="/settings"
+              title="Configurações"
+              className={`p-3.5 rounded-2xl transition-all flex items-center justify-center ${
+                pathname === '/settings'
+                  ? 'text-primary bg-primary/10 border border-primary/20'
+                  : 'text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary'
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
           </nav>
         </div>
 
         {/* Bottom: Sidebar User Profile Avatar Trigger */}
         <div className="flex flex-col items-center w-full px-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="w-10 h-10 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-400 font-bold uppercase transition-all cursor-pointer flex items-center justify-center shrink-0 focus:outline-none">
-              {userName.substring(0, 2)}
+            <DropdownMenuTrigger className="w-10 h-10 rounded-2xl bg-indigo-650/10 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-400 font-bold uppercase transition-all cursor-pointer flex items-center justify-center shrink-0 focus:outline-none overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                userName.substring(0, 2)
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" side="right" className="w-48 bg-slate-900 border-slate-800 text-slate-200 ml-2">
               <div className="px-2 py-1.5 text-xs text-slate-400 border-b border-slate-850">
@@ -195,8 +220,12 @@ export default function DashboardLayoutClient({
               {/* User Dropdown Profile */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 pl-1 cursor-pointer group outline-none bg-transparent border-none p-0">
-                  <div className="w-8 h-8 rounded-full bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0 uppercase shadow-[0_0_12px_rgba(99,102,241,0.05)]">
-                    {userName.substring(0, 2)}
+                  <div className="w-8 h-8 rounded-full bg-indigo-650/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0 uppercase overflow-hidden shadow-[0_0_12px_rgba(99,102,241,0.05)]">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      userName.substring(0, 2)
+                    )}
                   </div>
                   <div className="hidden sm:flex flex-col text-left">
                     <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors capitalize leading-none">{userName}</span>

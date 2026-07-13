@@ -1,27 +1,24 @@
-# Walkthrough: Gráfico Pizza, Top Ofertas, Proporção e Períodos (7, 30 e 60 Dias)
+# Walkthrough: Geração de Dados de Teste e Gráfico de Evolução por Oferta
 
-Refinamento visual do Dashboard principal (`/`) com a inclusão de gráfico circular de rosca, listagem de ofertas de alta relevância, correção de escala e seletor de período dinâmico.
+Implementação do gerador automático de 20 ofertas de teste com histórico diário simulado de 15 dias, e integração do gráfico de evolução de anúncios ativos individual por oferta.
 
 ## Alterações Realizadas
 
-1. **Gráfico de Pizza/Rosca para Nichos**:
-   - Desenvolvido um Donut/Pie Chart em SVG nativo em `src/app/(dashboard)/page.tsx`.
-   - Calcula frações de circunferência dinamicamente (`2 * PI * r`) usando as propriedades `strokeDasharray` e `strokeDashoffset` com rotação de -90 graus para alinhar as fatias ao topo.
-   - Legenda lateral direita exibindo as cores dos nichos e respectivas porcentagens.
+1. **Ação do Servidor `generateTestOffers`**:
+   - Desenvolvida a Server Action em `src/app/(dashboard)/offers/actions.ts` que simula e insere 20 ofertas completas no banco de dados Supabase do usuário ativo.
+   - Cada oferta é gerada com títulos, produtos, nichos e anunciantes altamente realistas da Meta Ad Library.
+   - Popula a coluna `ads_history` de cada oferta com dados randômicos flutuantes ao longo dos últimos 15 dias, simulando histórico real de escala de anúncios.
+   - A ação resolve para `Promise<void>`, sendo compatível nativamente com o atributo `action` de formulários HTML e Server Actions do Next.js.
 
-2. **Top 3 Ofertas Ativas**:
-   - Criado um widget de ranking para destacar as 3 ofertas com maior quantidade de anúncios ativos.
-   - Exibe a classificação estilizada (ouro, prata e bronze), anunciante, nicho correspondente e badges informando a contagem de anúncios.
+2. **Gatilhos Visuais (Botões de Geração)**:
+   - Adicionado botão "Gerar 20 Ofertas de Teste" com ícone de banco de dados na tela de listagem de ofertas (`/offers`).
+   - Adicionado o mesmo botão na tela do painel do Dashboard (`/`) quando em estado vazio.
+   - Ambos disparam a ação de forma nativa e revalidam o cache para carregar e renderizar instantaneamente os novos registros no banco.
 
-3. **Correção do Gráfico de Área Esticado**:
-   - Ajustada a proporção do SVG em `page.tsx` para `800x180` (widescreen nativo).
-   - Removida a propriedade `preserveAspectRatio="none"` permitindo que o SVG seja renderizado proporcionalmente, eliminando a distorção oval nos círculos e esticamento nos textos e fontes.
-
-4. **Seletor de Períodos Dinâmicos (7D, 30D e 60D)**:
-   - Modificada a rota `/` para analisar parâmetros de busca da URL (ex: `?days=30`).
-   - Implementado o switch de abas na barra de ferramentas do gráfico superior.
-   - Adaptada a função `getEvolutionData` para segmentar e espaçar de forma organizada os rótulos de data no eixo X, evitando colisões.
-   - Reduzido dinamicamente o raio do ponto do gráfico SVG de 3.5 para 1.5 ao carregar dados de 30 e 60 dias para manter a clareza e limpeza visual.
+3. **Gráfico de Evolução na Oferta Individual**:
+   - Integrado o gráfico de área/linha SVG customizado em `src/app/(dashboard)/offers/[id]/details-client.tsx`.
+   - Exibe a linha do histórico diário de anúncios ativos específicos desta oferta nos últimos 7 dias, posicionada logo abaixo do calendário editável de dias.
+   - Apresenta proporções widescreen que se adaptam sem distorção e com tooltips interativas no hover de cada marcador.
 
 ---
 
