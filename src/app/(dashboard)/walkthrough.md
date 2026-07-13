@@ -1,6 +1,6 @@
-# Walkthrough: Gráfico Pizza, Top Ofertas e Proporção do Gráfico
+# Walkthrough: Gráfico Pizza, Top Ofertas, Proporção e Períodos (7, 30 e 60 Dias)
 
-Refinamento visual do Dashboard principal (`/`) com a inclusão de gráfico circular de rosca, listagem de ofertas de alta relevância e correção de escala dos gráficos de linha.
+Refinamento visual do Dashboard principal (`/`) com a inclusão de gráfico circular de rosca, listagem de ofertas de alta relevância, correção de escala e seletor de período dinâmico.
 
 ## Alterações Realizadas
 
@@ -16,6 +16,12 @@ Refinamento visual do Dashboard principal (`/`) com a inclusão de gráfico circ
 3. **Correção do Gráfico de Área Esticado**:
    - Ajustada a proporção do SVG em `page.tsx` para `800x180` (widescreen nativo).
    - Removida a propriedade `preserveAspectRatio="none"` permitindo que o SVG seja renderizado proporcionalmente, eliminando a distorção oval nos círculos e esticamento nos textos e fontes.
+
+4. **Seletor de Períodos Dinâmicos (7D, 30D e 60D)**:
+   - Modificada a rota `/` para analisar parâmetros de busca da URL (ex: `?days=30`).
+   - Implementado o switch de abas na barra de ferramentas do gráfico superior.
+   - Adaptada a função `getEvolutionData` para segmentar e espaçar de forma organizada os rótulos de data no eixo X, evitando colisões.
+   - Reduzido dinamicamente o raio do ponto do gráfico SVG de 3.5 para 1.5 ao carregar dados de 30 e 60 dias para manter a clareza e limpeza visual.
 
 ---
 

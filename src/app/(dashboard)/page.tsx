@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DashboardCards } from '@/components/dashboard-cards'
 import { Button } from '@/components/ui/button'
-import { PlusCircle, BarChart2, TrendingUp, Award, Calendar } from 'lucide-react'
+import { PlusCircle, BarChart2, TrendingUp, Award, Calendar, Database } from 'lucide-react'
+import { generateTestOffers } from '@/app/(dashboard)/offers/actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -92,12 +93,20 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             Cadastre suas primeiras ofertas da Meta Ad Library para começarmos a consolidar as estatísticas, médias e gráficos de evolução.
           </p>
         </div>
-        <Link href="/offers/new">
-          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium">
-            <PlusCircle className="w-4 h-4 mr-2" />
-            Cadastrar Primeira Oferta
-          </Button>
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link href="/offers/new">
+            <Button className="bg-indigo-650 hover:bg-indigo-550 text-white font-medium">
+              <PlusCircle className="w-4 h-4 mr-2" />
+              Cadastrar Primeira Oferta
+            </Button>
+          </Link>
+          <form action={generateTestOffers}>
+            <Button type="submit" variant="outline" className="border-slate-800 bg-slate-900/60 text-slate-350 hover:text-white">
+              <Database className="w-4 h-4 mr-2" />
+              Gerar 20 Ofertas de Teste
+            </Button>
+          </form>
+        </div>
       </div>
     )
   }

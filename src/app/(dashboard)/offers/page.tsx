@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { OfferFilters } from '@/components/offer-filters'
 import { OfferTable } from '@/components/offer-table'
-import { Search, Loader2 } from 'lucide-react'
+import { Search, Loader2, Database } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { generateTestOffers } from './actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -82,6 +84,14 @@ export default async function OffersPage({ searchParams }: PageProps) {
           <p className="text-xs text-slate-400 mt-1">
             Pesquise, filtre e monitore suas ofertas cadastradas da Meta Ad Library.
           </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <form action={generateTestOffers}>
+            <Button type="submit" variant="outline" className="border-slate-800 bg-slate-900/60 text-slate-350 hover:text-white hover:bg-slate-800/80 text-xs">
+              <Database className="w-3.5 h-3.5 mr-1.5" />
+              Gerar 20 Ofertas de Teste
+            </Button>
+          </form>
         </div>
       </div>
 
