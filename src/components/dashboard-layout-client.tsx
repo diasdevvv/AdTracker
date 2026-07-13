@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database, Settings } from 'lucide-react'
+import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database, Settings, LifeBuoy } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
 import {
   DropdownMenu,
@@ -137,17 +137,13 @@ export default function DashboardLayoutClient({
             >
               <PlusCircle className="w-5 h-5" />
             </Link>
-            <Link
-              href="/settings"
-              title="Configurações"
-              className={`p-3.5 rounded-2xl transition-all flex items-center justify-center ${
-                pathname === '/settings'
-                  ? 'text-primary bg-primary/10 border border-primary/20'
-                  : 'text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary'
-              }`}
+            <button
+              type="button"
+              title="Suporte (Breve)"
+              className="p-3.5 rounded-2xl transition-all flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary border border-transparent focus:outline-none cursor-pointer"
             >
-              <Settings className="w-5 h-5" />
-            </Link>
+              <LifeBuoy className="w-5 h-5" />
+            </button>
           </nav>
         </div>
 
@@ -166,6 +162,17 @@ export default function DashboardLayoutClient({
                 <span className="block font-semibold text-slate-200 capitalize truncate">{userName}</span>
                 <span className="block text-[10px] text-slate-500 truncate mt-0.5">{userEmail}</span>
               </div>
+              <Link href="/settings" className="w-full">
+                <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left">
+                  <Settings className="w-3.5 h-3.5 text-indigo-400" />
+                  Configurações
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left opacity-70">
+                <LifeBuoy className="w-3.5 h-3.5 text-indigo-400" />
+                Suporte (Breve)
+              </DropdownMenuItem>
+              <div className="h-px bg-slate-850 my-1" />
               <form action={logout}>
                 <button type="submit" className="w-full">
                   <DropdownMenuItem className="text-red-455 focus:text-red-400 focus:bg-red-950/20 gap-2 cursor-pointer w-full text-left">
@@ -237,6 +244,17 @@ export default function DashboardLayoutClient({
                   <div className="px-2 py-1.5 text-xs text-slate-400 border-b border-slate-850">
                     Conectado como <strong className="text-slate-250 truncate block">{userEmail}</strong>
                   </div>
+                  <Link href="/settings" className="w-full">
+                    <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left">
+                      <Settings className="w-3.5 h-3.5 text-indigo-400" />
+                      Configurações
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem className="focus:bg-slate-800 focus:text-white gap-2 cursor-pointer w-full text-left opacity-70">
+                    <LifeBuoy className="w-3.5 h-3.5 text-indigo-400" />
+                    Suporte (Breve)
+                  </DropdownMenuItem>
+                  <div className="h-px bg-slate-850 my-1" />
                   <form action={logout}>
                     <button type="submit" className="w-full">
                       <DropdownMenuItem className="text-red-455 focus:text-red-400 focus:bg-red-950/20 gap-2 cursor-pointer w-full text-left">
