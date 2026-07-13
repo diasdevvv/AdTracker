@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown } from 'lucide-react'
+import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown, Database } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
 import {
   DropdownMenu,
@@ -36,7 +36,22 @@ export default function DashboardLayoutClient({
       <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
         <Link href="/" className="hover:text-white transition-colors">Dashboard</Link>
         {parts.map((part, idx) => {
-          if (part === 'offers') return null
+          if (part === 'offers') {
+            if (parts.length === 1) {
+              return (
+                <span key={idx} className="flex items-center gap-1.5">
+                  <span className="text-slate-600">/</span>
+                  <span className="text-slate-200 font-semibold">Ofertas</span>
+                </span>
+              )
+            }
+            return (
+              <span key={idx} className="flex items-center gap-1.5">
+                <span className="text-slate-600">/</span>
+                <Link href="/offers" className="hover:text-white transition-colors">Ofertas</Link>
+              </span>
+            )
+          }
           if (part === 'new') {
             return (
               <span key={idx} className="flex items-center gap-1.5">
@@ -53,8 +68,8 @@ export default function DashboardLayoutClient({
               </span>
             )
           }
-          // Details page
-          if (idx === 1) {
+          // Details page or subpaths
+          if (idx === 1 && parts[idx - 1] === 'offers') {
             return (
               <span key={idx} className="flex items-center gap-1.5">
                 <span className="text-slate-600">/</span>
@@ -82,14 +97,33 @@ export default function DashboardLayoutClient({
             <Link
               href="/"
               title="Dashboard"
-              className="p-3.5 rounded-2xl text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary transition-all flex items-center justify-center"
+              className={`p-3.5 rounded-2xl transition-all flex items-center justify-center ${
+                pathname === '/'
+                  ? 'text-primary bg-primary/10 border border-primary/20'
+                  : 'text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary'
+              }`}
             >
               <LayoutDashboard className="w-5 h-5" />
             </Link>
             <Link
+              href="/offers"
+              title="Minhas Ofertas"
+              className={`p-3.5 rounded-2xl transition-all flex items-center justify-center ${
+                pathname === '/offers'
+                  ? 'text-primary bg-primary/10 border border-primary/20'
+                  : 'text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary'
+              }`}
+            >
+              <Database className="w-5 h-5" />
+            </Link>
+            <Link
               href="/offers/new"
               title="Nova Oferta"
-              className="p-3.5 rounded-2xl text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary transition-all flex items-center justify-center"
+              className={`p-3.5 rounded-2xl transition-all flex items-center justify-center ${
+                pathname === '/offers/new'
+                  ? 'text-primary bg-primary/10 border border-primary/20'
+                  : 'text-slate-400 hover:text-white hover:bg-primary/15 hover:text-primary'
+              }`}
             >
               <PlusCircle className="w-5 h-5" />
             </Link>
