@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DashboardCards } from '@/components/dashboard-cards'
 import { Button } from '@/components/ui/button'
-import { PlusCircle, BarChart2, TrendingUp, Award, Layers, Calendar } from 'lucide-react'
+import { PlusCircle, BarChart2, TrendingUp, Award, Calendar } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link href="/offers/new">
-          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium">
+          <Button className="bg-indigo-650 hover:bg-indigo-550 text-white font-medium">
             <PlusCircle className="w-4 h-4 mr-2" />
             Cadastrar Primeira Oferta
           </Button>
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
     noRecentUpdate,
   }
 
-  // 2. Anúncios por nicho
+  // 2. Anúncios por nicho (para o gráfico Pizza/Rosca)
   const nicheMap: Record<string, number> = {}
   offersList.forEach(offer => {
     const n = offer.niche || 'Outros'
@@ -117,15 +117,45 @@ export default async function DashboardPage() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5) // Top 5 nichos
 
-  const maxNicheAds = Math.max(...nichesData.map(n => n.count), 1)
+  const totalNicheAdsCount = nichesData.reduce((sum, n) => sum + n.count, 0) || 1
 
-  // 3. Evolução de anúncios de 7 dias
+  // Configuração das cores para o gráfico Donut
+  const colors = ['#6366f1', '#10b981', '#06b6d4', '#f59e0b', '#ec4899']
+  const tailwindBgColors = ['bg-[#6366f1]', 'bg-[#10b981]', 'bg-[#06b6d4]', 'bg-[#f59e0b]', 'bg-[#ec4899]']
+
+  const r = 40
+  const circ = 2 * Math.PI * r // ~251.327
+  let accumulatedOffset = 0
+
+  const pieSegments = nichesData.map((niche, idx) => {
+    const percentage = niche.count / totalNicheAdsCount
+    const strokeLength = percentage * circ
+    const strokeOffset = -accumulatedOffset
+    accumulatedOffset += strokeLength
+
+    return {
+      name: niche.name,
+      count: niche.count,
+      percentage: (percentage * 100).toFixed(0),
+      strokeDasharray: `${strokeLength} ${circ}`,
+      strokeDashoffset: strokeOffset,
+      color: colors[idx % colors.length],
+      bgColor: tailwindBgColors[idx % colors.length],
+    }
+  })
+
+  // 3. Top 3 ofertas ativas por volume de anúncios
+  const topOffers = [...offersList]
+    .sort((a, b) => (b.current_ads_count || 0) - (a.current_ads_count || 0))
+    .slice(0, 3)
+
+  // 4. Evolução de anúncios de 7 dias (Gráfico de área corrigido)
   const evolutionData = getEvolutionData(offersList)
   const maxAds = Math.max(...evolutionData.map(d => d.count), 10)
   
-  // Coordenadas para o gráfico SVG
-  const chartWidth = 500
-  const chartHeight = 160
+  // Widescreen proportions to prevent stretching
+  const chartWidth = 800
+  const chartHeight = 180
   const paddingLeft = 40
   const paddingRight = 20
   const paddingTop = 15
@@ -154,94 +184,108 @@ export default async function DashboardPage() {
 
       {/* Analytics Grid */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Niche Breakdown */}
+        {/* Niche Pie/Donut Chart */}
         <div className="border border-slate-900 bg-slate-950/40 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-between">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-indigo-400" />
+              <BarChart2 className="w-4 h-4 text-indigo-400" />
               Distribuição de Anúncios por Nicho
             </h3>
             <p className="text-xs text-slate-450">
-              Top 5 nichos com maior volume de anúncios ativos acumulados.
+              Proporção de anúncios ativos divididos pelos top nichos de mercado.
             </p>
           </div>
 
-          <div className="space-y-4.5 mt-6">
-            {nichesData.map((niche, idx) => {
-              const pct = (niche.count / maxNicheAds) * 100
-              const colors = [
-                'bg-indigo-500',
-                'bg-emerald-500',
-                'bg-cyan-500',
-                'bg-amber-500',
-                'bg-pink-500',
-              ]
-              return (
-                <div key={niche.name} className="space-y-1.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-semibold text-slate-200 capitalize">{niche.name}</span>
-                    <span className="font-extrabold text-slate-400">{niche.count} ads</span>
+          <div className="flex flex-row items-center gap-6 mt-6 min-h-[140px]">
+            {/* SVG Donut Chart */}
+            <div className="relative w-36 h-36 shrink-0 flex items-center justify-center">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="40" stroke="#111116" strokeWidth="12" fill="transparent" />
+                {pieSegments.map((seg, idx) => (
+                  <circle 
+                    key={idx}
+                    cx="70" 
+                    cy="70" 
+                    r="40" 
+                    stroke={seg.color} 
+                    strokeWidth="12" 
+                    fill="transparent" 
+                    strokeDasharray={seg.strokeDasharray}
+                    strokeDashoffset={seg.strokeDashoffset}
+                    transform="rotate(-90 70 70)"
+                    strokeLinecap="round"
+                    className="transition-all duration-300 hover:stroke-[14] cursor-pointer"
+                  />
+                ))}
+              </svg>
+              {/* Center total */}
+              <div className="absolute flex flex-col items-center justify-center text-center">
+                <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider">Anúncios</span>
+                <span className="text-base font-black text-white leading-none mt-1">{totalAds}</span>
+              </div>
+            </div>
+
+            {/* Color Legend */}
+            <div className="flex-1 flex flex-col gap-2">
+              {pieSegments.map((seg) => (
+                <div key={seg.name} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className={`w-2.5 h-2.5 rounded-full ${seg.bgColor} shrink-0`} />
+                    <span className="font-semibold text-slate-350 capitalize truncate">{seg.name}</span>
                   </div>
-                  <div className="w-full bg-slate-900/60 h-2.5 rounded-full overflow-hidden border border-slate-900">
-                    <div 
-                      className={`h-full ${colors[idx % colors.length]} rounded-full transition-all duration-500`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
+                  <span className="font-extrabold text-slate-500 shrink-0 ml-1">
+                    {seg.percentage}%
+                  </span>
                 </div>
-              )
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Statistical Averages & Insights */}
+        {/* Top 3 Active Offers */}
         <div className="border border-slate-900 bg-slate-950/40 backdrop-blur-md rounded-2xl p-6 flex flex-col justify-between">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Award className="w-4 h-4 text-indigo-400" />
-              Estatísticas & Médias Avançadas
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              Top 3 Ofertas Ativas
             </h3>
             <p className="text-xs text-slate-450">
-              Indicadores consolidados das campanhas sob monitoramento.
+              Ofertas com o maior volume de anúncios ativos veiculando no momento.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            {/* Avg Ads per Offer */}
-            <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl flex flex-col justify-between">
-              <span className="text-[10px] text-slate-450 font-semibold uppercase tracking-wider">Média p/ Oferta</span>
-              <div className="flex items-baseline gap-1 mt-2">
-                <span className="text-2xl font-black text-white">{avgAdsPerOffer}</span>
-                <span className="text-[10px] text-slate-500 font-medium">anúncios</span>
-              </div>
-            </div>
-
-            {/* Total Active Ads */}
-            <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl flex flex-col justify-between">
-              <span className="text-[10px] text-slate-455 font-semibold uppercase tracking-wider">Total de Anúncios</span>
-              <div className="flex items-baseline gap-1 mt-2">
-                <span className="text-2xl font-black text-emerald-400">{totalAds}</span>
-                <span className="text-[10px] text-slate-500 font-medium">ativos</span>
-              </div>
-            </div>
-
-            {/* Scaling Rate */}
-            <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl flex flex-col justify-between">
-              <span className="text-[10px] text-slate-455 font-semibold uppercase tracking-wider">Taxa de Escala</span>
-              <div className="flex items-baseline gap-1 mt-2">
-                <span className="text-2xl font-black text-indigo-400">{scalingRate}%</span>
-                <span className="text-[10px] text-slate-500 font-medium">das ofertas</span>
-              </div>
-            </div>
-
-            {/* Favorite Rate */}
-            <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl flex flex-col justify-between">
-              <span className="text-[10px] text-slate-455 font-semibold uppercase tracking-wider">Taxa de Favoritas</span>
-              <div className="flex items-baseline gap-1 mt-2">
-                <span className="text-2xl font-black text-amber-400">{favoriteRate}%</span>
-                <span className="text-[10px] text-slate-500 font-medium">favoritadas</span>
-              </div>
-            </div>
+          <div className="space-y-3 mt-6">
+            {topOffers.map((offer, idx) => {
+              const rankColors = [
+                'text-amber-400 bg-amber-500/10 border-amber-500/20',
+                'text-slate-300 bg-slate-300/10 border-slate-300/20',
+                'text-amber-700 bg-amber-700/10 border-amber-700/20',
+              ]
+              return (
+                <Link 
+                  key={offer.id} 
+                  href={`/offers/${offer.id}`}
+                  className="flex items-center justify-between p-3 bg-slate-900/30 border border-slate-900 hover:border-slate-800 rounded-xl transition-all group/offer"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={`w-6 h-6 rounded-lg border text-xs font-black flex items-center justify-center shrink-0 ${rankColors[idx % rankColors.length]}`}>
+                      {idx + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-bold text-slate-200 truncate group-hover/offer:text-white transition-colors">{offer.title}</h4>
+                      <p className="text-[10px] text-slate-500 truncate capitalize mt-0.5">
+                        {offer.advertiser_name || 'Anunciante'} • <span className="text-slate-450">{offer.niche || 'Geral'}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/10">
+                      {offer.current_ads_count || 0} ads
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -251,7 +295,7 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap justify-between items-center gap-4 pb-4 border-b border-slate-900/50">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-indigo-400" />
+              <Award className="w-4 h-4 text-indigo-400" />
               Evolução de Anúncios Ativos
             </h3>
             <p className="text-xs text-slate-450">
@@ -264,9 +308,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Custom SVG Line Chart */}
+        {/* Custom SVG Line Chart (Correct Aspect Ratio - No preserveAspectRatio=none) */}
         <div className="mt-6 w-full h-[180px] relative">
-          <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
+          <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
             <defs>
               <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="rgb(99, 102, 241)" stopOpacity="0.25" />
