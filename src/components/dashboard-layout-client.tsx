@@ -4,6 +4,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BarChart2, LayoutDashboard, PlusCircle, LogOut, User, Moon, Bell, ChevronDown } from 'lucide-react'
 import { logout } from '@/app/(auth)/login/actions'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface DashboardLayoutClientProps {
   userName: string
@@ -90,17 +96,27 @@ export default function DashboardLayoutClient({
           </nav>
         </div>
 
-        {/* Bottom: Logout */}
+        {/* Bottom: Sidebar User Profile Avatar Trigger */}
         <div className="flex flex-col items-center w-full px-2">
-          <form action={logout}>
-            <button
-              type="submit"
-              title="Sair"
-              className="p-3.5 rounded-2xl text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-all cursor-pointer flex items-center justify-center"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          </form>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="w-10 h-10 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-400 font-bold uppercase transition-all cursor-pointer flex items-center justify-center shrink-0 focus:outline-none">
+              {userName.substring(0, 2)}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" side="right" className="w-48 bg-slate-900 border-slate-800 text-slate-200 ml-2">
+              <div className="px-2 py-1.5 text-xs text-slate-400 border-b border-slate-850">
+                <span className="block font-semibold text-slate-200 capitalize truncate">{userName}</span>
+                <span className="block text-[10px] text-slate-500 truncate mt-0.5">{userEmail}</span>
+              </div>
+              <form action={logout}>
+                <button type="submit" className="w-full">
+                  <DropdownMenuItem className="text-red-455 focus:text-red-400 focus:bg-red-950/20 gap-2 cursor-pointer w-full text-left">
+                    <LogOut className="w-3.5 h-3.5" />
+                    Sair da Conta
+                  </DropdownMenuItem>
+                </button>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
 
@@ -143,16 +159,31 @@ export default function DashboardLayoutClient({
               <div className="h-5 w-px bg-slate-900/80 mx-1 hidden sm:block" />
 
               {/* User Dropdown Profile */}
-              <div className="flex items-center gap-2 pl-1 cursor-pointer group">
-                <div className="w-8 h-8 rounded-full bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0 uppercase shadow-[0_0_12px_rgba(99,102,241,0.05)]">
-                  {userName.substring(0, 2)}
-                </div>
-                <div className="hidden sm:flex flex-col text-left">
-                  <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors capitalize leading-none">{userName}</span>
-                  <span className="text-[9px] text-slate-500 mt-0.5 leading-none">Usuário</span>
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-350 transition-colors hidden sm:block" />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 pl-1 cursor-pointer group outline-none bg-transparent border-none p-0">
+                  <div className="w-8 h-8 rounded-full bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold shrink-0 uppercase shadow-[0_0_12px_rgba(99,102,241,0.05)]">
+                    {userName.substring(0, 2)}
+                  </div>
+                  <div className="hidden sm:flex flex-col text-left">
+                    <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors capitalize leading-none">{userName}</span>
+                    <span className="text-[9px] text-slate-500 mt-0.5 leading-none">Usuário</span>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-350 transition-colors hidden sm:block" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-slate-900 border-slate-800 text-slate-200">
+                  <div className="px-2 py-1.5 text-xs text-slate-400 border-b border-slate-850">
+                    Conectado como <strong className="text-slate-250 truncate block">{userEmail}</strong>
+                  </div>
+                  <form action={logout}>
+                    <button type="submit" className="w-full">
+                      <DropdownMenuItem className="text-red-455 focus:text-red-400 focus:bg-red-950/20 gap-2 cursor-pointer w-full text-left">
+                        <LogOut className="w-3.5 h-3.5" />
+                        Sair da Conta
+                      </DropdownMenuItem>
+                    </button>
+                  </form>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               {/* Mobile logout */}
               <form action={logout} className="md:hidden ml-1">
